@@ -6,13 +6,12 @@ A minimal, Wi-Fi connected temperature and humidity sensor built with an **ESP-0
 
 ## 📦 Hardware
 
-| Component | Details |
-|---|---|
-| Microcontroller | ESP-01S (ESP8266, IOTMCU variant) |
-| Sensor | DHT22 (AM2302) — temperature & humidity |
-| Programmer | USB-TTL adapter (set jumper to **3.3V** — never 5V!) |
-| Wires | Dupont jumper wires |
-| Power (optional) | Separate 3.3V supply (ESP-01 is power-sensitive) |
+| Component | Details | Buy |
+|---|---|---|
+| Microcontroller + Sensor | ESP-01S (ESP8266) + DHT22 (AM2302) — combo | [AliExpress](https://www.aliexpress.com/item/1005007048872208.html) |
+| Programmer | USB-TTL adapter (set jumper to **3.3V** — never 5V!) | [Amazon NL](https://www.amazon.nl/dp/B07TXVRQ7V) |
+| Wires | Dupont jumper wires | |
+| Power (optional) | Separate 3.3V supply (ESP-01 is power-sensitive) | |
 
 ---
 
