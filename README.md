@@ -48,9 +48,8 @@ A minimal, Wi-Fi connected temperature and humidity sensor built with an **ESP-0
 ### Step 1 — Install the YAML in ESPHome
 
 1. Open **Home Assistant** and go to **ESPHome** (add-on or integration).
-2. Click **+ New Device** → give it a name → choose **ESP8266**.
-3. Replace the generated YAML with the contents of [`dht22-esp01.yaml`](./dht22-esp01.yaml) from this repo.
-4. Click **Save**.
+2. Click **+ New Device** → choose **Import from File** → upload [`dht22_esp01.yml`](./dht22_esp01.yml) from this repo.
+3. Click **Save**.
 
 ### Step 2 — Download the firmware
 
