@@ -236,6 +236,21 @@ button:
 
 ---
 
+## 🎯 Calibration
+
+The DHT22 sensor can have a small offset compared to the actual temperature or humidity. You can correct this directly in Home Assistant using the built-in offset controls — no reflashing needed.
+
+### How to calibrate
+
+1. Place a accurate reference thermometer/hygrometer next to the ESP-01S sensor and let both stabilize for at least 15 minutes.
+2. In Home Assistant, go to the device and find the **Temperature Offset** and **Humidity Offset** number entities.
+3. Compare the readings and enter the difference as the offset. For example, if the sensor reads 22.5°C but the reference shows 21.8°C, set the offset to `-0.7`.
+4. The corrected value is applied in real time — no restart needed.
+
+> 💡 A good reference device to use: [Bambulab Circular Digital Thermometer/Hygrometer](https://nl.aliexpress.com/item/1005009214032096.html) — compact, accurate, and battery-powered.
+
+---
+
 ## ⚠️ Troubleshooting
 
 | Problem | Solution |
