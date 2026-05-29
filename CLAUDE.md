@@ -1,29 +1,29 @@
 # ESPHome DHT22 ESP-01S
 
-ESPHome firmware voor een ESP-01S met DHT22 temperatuur/vochtsensor. OTA updates verlopen via Home Assistant dankzij de `update` component.
+ESPHome firmware for an ESP-01S with a DHT22 temperature/humidity sensor. OTA updates are handled via Home Assistant using the `update` component.
 
-## Projectstructuur
+## Project structure
 
-- `dht22_esp01.yml` — ESPHome configuratie
-- `manifest.json` — firmware manifest voor de update component (gehost via GitHub raw)
-- `.gitignore` — sluit `*.bin` uit van git
-- Gecompileerde firmware wordt als asset geüpload bij een GitHub Release
+- `dht22_esp01.yml` — ESPHome configuration
+- `manifest.json` — firmware manifest for the update component (hosted via GitHub raw)
+- `.gitignore` — excludes `*.bin` from git
+- Compiled firmware is uploaded as an asset to a GitHub Release
 
-## Release-workflow (nieuwe firmwareversie uitbrengen)
+## Release workflow (publishing a new firmware version)
 
-1. Verhoog `version` in `dht22_esp01.yml` onder `esphome.project` (bijv. `"1.0.1"`)
-2. Verhoog `version` in `manifest.json` naar dezelfde waarde
-3. Pas de `path` URL in `manifest.json` aan naar de nieuwe release-tag (bijv. `v1.0.1`)
-4. Compileer de firmware in ESPHome Dashboard → download de `.bin`
-5. Commit en push de gewijzigde YAML en manifest
-6. Maak een GitHub Release aan met de nieuwe tag: `gh release create v1.0.1 dht22-esp01.bin --title "v1.0.1"`
-7. Home Assistant toont automatisch "update beschikbaar" → installeren
+1. Bump `version` in `dht22_esp01.yml` under `esphome.project` (e.g. `"1.0.1"`)
+2. Bump `version` in `manifest.json` to the same value
+3. Update the `path` URL in `manifest.json` to point to the new release tag (e.g. `v1.0.1`)
+4. Compile the firmware in ESPHome Dashboard → download the `.bin`
+5. Commit and push the updated YAML and manifest
+6. Create a GitHub Release with the new tag: `gh release create v1.0.1 dht22-esp01.bin --title "v1.0.1"`
+7. Home Assistant will automatically show "update available" → install
 
-## Belangrijke beperkingen
+## Important limitations
 
-**ESP-01S heeft slechts 1MB flash.** OTA vereist dat ~50% vrij is voor het nieuwe image (~470KB max per firmware slot). Voeg geen grote components toe zonder de binary size te controleren. `web_server` is al aanwezig en relatief zwaar — verwijder het als de binary niet meer past.
+**ESP-01S only has 1MB of flash.** OTA requires ~50% free space for the new image (~470KB max per firmware slot). Do not add large components without checking binary size. `web_server` is already present and relatively heavy — remove it if the binary no longer fits.
 
-**ESP8266 kan geen SSL-certificaten valideren.** De `http_request` component staat daarom op `verify_ssl: false`. Dit is een platformbeperking, geen bug.
+**ESP8266 cannot validate SSL certificates.** The `http_request` component therefore has `verify_ssl: false`. This is a platform limitation, not a bug.
 
 ## GitHub repo
 
