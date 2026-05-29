@@ -23,7 +23,7 @@ A minimal, Wi-Fi connected temperature and humidity sensor built with an **ESP-0
 - ⏱️ Uptime sensor
 - 🔌 Status binary sensor
 - 🌐 Built-in web server (port 80)
-- 🔁 OTA (Over-the-Air) updates via ESPHome
+- 🔁 OTA firmware updates via Home Assistant (no USB required after initial flash)
 - 🛠️ Captive portal for easy Wi-Fi setup
 - 🏠 Native Home Assistant API integration
 
@@ -117,9 +117,25 @@ Once connected, the following entities will appear in Home Assistant:
 | Temperature Offset | Number (config) |
 | Humidity Offset | Number (config) |
 | Restart Device | Button |
+| Firmware Update | Update |
 
 ---
 
+## 🔄 Firmware Updates
+
+After the initial flash, all future updates can be installed directly from Home Assistant — no USB adapter or programmer needed.
+
+The device checks for new firmware via a [manifest file](./manifest.json) hosted in this repository. When a new release is published, a **Firmware Update** entity will appear on the device page in Home Assistant.
+
+### How to update
+
+1. In Home Assistant, go to **Settings → Devices & Services → ESPHome** and open the device.
+2. Find the **Firmware Update** entity and click **Install**.
+3. The device downloads and flashes the new firmware over Wi-Fi and reboots automatically.
+
+> ℹ️ The **first flash must be done via USB** (see flashing instructions above). The OTA update mechanism is installed as part of that initial firmware.
+
+---
 
 ## 🎯 Calibration
 
