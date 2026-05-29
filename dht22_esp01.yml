@@ -7,6 +7,9 @@ esphome:
   name: ${device_base_name}
   name_add_mac_suffix: true
   friendly_name: ${device_friendly_name}
+  project:
+    name: "hugo-leij.dht22-esp01"
+    version: "1.0.0"
 
 esp8266:
   board: esp01_1m
@@ -18,13 +21,20 @@ api:
 
 ota:
   - platform: esphome
+  - platform: http_request
+    id: ota_http
 
-web_server:
-  version: 2
+http_request:
+  verify_ssl: false
 
 web_server:
   version: 2
   port: 80
+
+update:
+  - platform: http_request
+    name: "Firmware Update"
+    source: https://raw.githubusercontent.com/hugo-leij/esphome-dht22-esp01/main/manifest.json
 
 wifi:
   fast_connect: true
