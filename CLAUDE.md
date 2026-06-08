@@ -27,6 +27,15 @@ GitHub's TLS records are too large for the ESP8266's RAM, so the fetch fails wit
 `BR_ERR_TOO_LARGE` even with `verify_ssl: false`. Those components were removed; updates
 are now manual via the terminal.
 
+## Identifying devices
+
+All units share the same `device_friendly_name` (`DHT22 ESP-01`), with `name_add_mac_suffix`
+making only the hostname unique. To tell physical sensors apart there's a `text` template
+entity **Location** (`id: location`, `restore_value: true`) — set per device from Home
+Assistant or the web interface; it's stored in flash and survives reboots, no reflash needed.
+Do not give each device a unique `friendly_name` in this shared config — that's what Location
+is for.
+
 ## Important limitations
 
 **ESP-01S only has 1MB of flash.** OTA requires ~50% free space for the new image (~470KB max per firmware slot). Do not add large components without checking binary size. `web_server` is already present and relatively heavy — remove it if the binary no longer fits.
