@@ -9,7 +9,7 @@ esphome:
   friendly_name: ${device_friendly_name}
   project:
     name: "hugo-leij.dht22-esp01"
-    version: "1.0.0"
+    version: "1.0.2"
 
 esp8266:
   board: esp01_1m
@@ -21,20 +21,10 @@ api:
 
 ota:
   - platform: esphome
-  - platform: http_request
-    id: ota_http
-
-http_request:
-  verify_ssl: false
 
 web_server:
   version: 2
   port: 80
-
-update:
-  - platform: http_request
-    name: "Firmware Update"
-    source: https://raw.githubusercontent.com/hugo-leij/esphome-dht22-esp01/main/manifest.json
 
 wifi:
   fast_connect: true
@@ -49,8 +39,8 @@ number:
   - platform: template
     name: "Temperature Offset"
     id: temperature_offset
-    min_value: -10
-    max_value: 10
+    min_value: -50
+    max_value: 50
     step: 0.1
     mode: box
     unit_of_measurement: "°C"
@@ -62,8 +52,8 @@ number:
   - platform: template
     name: "Humidity Offset"
     id: humidity_offset
-    min_value: -20
-    max_value: 20
+    min_value: -50
+    max_value: 50
     step: 0.1
     mode: box
     unit_of_measurement: "%"

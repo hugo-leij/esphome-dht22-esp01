@@ -23,7 +23,7 @@ A minimal, Wi-Fi connected temperature and humidity sensor built with an **ESP-0
 - ⏱️ Uptime sensor
 - 🔌 Status binary sensor
 - 🌐 Built-in web server (port 80)
-- 🔁 OTA firmware updates via Home Assistant (no USB required after initial flash)
+- 🔁 OTA firmware updates over Wi-Fi via `esphome upload` (no USB required after initial flash)
 - 🛠️ Captive portal for easy Wi-Fi setup
 - 🏠 Native Home Assistant API integration
 
@@ -117,23 +117,26 @@ Once connected, the following entities will appear in Home Assistant:
 | Temperature Offset | Number (config) |
 | Humidity Offset | Number (config) |
 | Restart Device | Button |
-| Firmware Update | Update |
 
 ---
 
 ## 🔄 Firmware Updates
 
-After the initial flash, all future updates can be installed directly from Home Assistant — no USB adapter or programmer needed.
-
-The device checks for new firmware via a [manifest file](./manifest.json) hosted in this repository. When a new release is published, a **Firmware Update** entity will appear on the device page in Home Assistant.
+After the initial USB flash, all future updates are pushed over Wi-Fi from the terminal with `esphome upload` — no USB adapter or programmer needed.
 
 ### How to update
 
-1. In Home Assistant, go to **Settings → Devices & Services → ESPHome** and open the device.
-2. Find the **Firmware Update** entity and click **Install**.
-3. The device downloads and flashes the new firmware over Wi-Fi and reboots automatically.
+1. Bump `version` in `dht22_esp01.yml` under `esphome.project` (optional, for tracking).
+2. From a machine with [ESPHome installed](https://esphome.io/guides/installing_esphome), run:
+   ```bash
+   esphome upload dht22_esp01.yml --device <device-ip>
+   ```
+   For example: `esphome upload dht22_esp01.yml --device 10.0.10.48`
+3. ESPHome compiles the firmware locally and flashes it over Wi-Fi; the device reboots automatically.
 
-> ℹ️ The **first flash must be done via USB** (see flashing instructions above). The OTA update mechanism is installed as part of that initial firmware.
+> ℹ️ The **first flash must be done via USB** (see flashing instructions above). The Wi-Fi OTA mechanism (`ota: esphome`) is installed as part of that initial firmware.
+
+> ⚠️ Home Assistant auto-update is **not** used. GitHub's TLS records are too large for the ESP8266's limited RAM (`BR_ERR_TOO_LARGE`), so manifest-based updates over HTTPS are unreliable on the ESP-01. Manual `esphome upload` over the local network is the supported path.
 
 ---
 
