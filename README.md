@@ -128,7 +128,9 @@ All units share the same friendly name (`DHT22 ESP-01`), so with several on your
 
 1. Open the device — in Home Assistant, or directly via its IP (web server on port 80).
 2. Set **Location** to where the sensor lives, e.g. `Living room` or `Bedroom`.
-3. The value is stored on the device and survives reboots — no reflash needed, and it moves with the device if you relocate it.
+3. The value is stored on the device and survives reboots and firmware updates — no reflash needed, and it moves with the device if you relocate it.
+
+Until you set it by hand, **Location** defaults to the device's own name (including its unique MAC suffix), so a fresh unit is never blank.
 
 The Location appears at the top of the web interface, so opening an IP immediately tells you which room it is.
 
@@ -136,21 +138,29 @@ The Location appears at the top of the web interface, so opening an IP immediate
 
 ## 🔄 Firmware Updates
 
-After the initial USB flash, all future updates are pushed over Wi-Fi from the terminal with `esphome upload` — no USB adapter or programmer needed.
+After the initial USB flash, all future updates are pushed over Wi-Fi from the terminal with `esphome run` — no USB adapter or programmer needed.
 
 ### How to update
 
-1. Bump `version` in `dht22_esp01.yml` under `esphome.project` (optional, for tracking).
+1. Edit `dht22_esp01.yml` and bump `version` under `esphome.project` (e.g. `"1.1.1"`).
 2. From a machine with [ESPHome installed](https://esphome.io/guides/installing_esphome), run:
    ```bash
-   esphome upload dht22_esp01.yml --device <device-ip>
+   esphome run dht22_esp01.yml --device <device-ip>
    ```
-   For example: `esphome upload dht22_esp01.yml --device 10.0.10.48`
-3. ESPHome compiles the firmware locally and flashes it over Wi-Fi; the device reboots automatically.
+   For example: `esphome run dht22_esp01.yml --device 10.0.10.48`
+
+   `esphome run` **compiles and uploads** in one step. (`esphome upload` only re-sends the
+   previously compiled binary — it does **not** pick up YAML changes, so always use `run`.)
+3. ESPHome compiles locally, flashes over Wi-Fi, the device reboots, and live logs are shown
+   (press `Ctrl+C` to stop watching the logs).
+4. Commit and push the change so the repo stays in sync:
+   ```bash
+   git add -A && git commit -m "Bump to 1.1.1" && git push
+   ```
 
 > ℹ️ The **first flash must be done via USB** (see flashing instructions above). The Wi-Fi OTA mechanism (`ota: esphome`) is installed as part of that initial firmware.
 
-> ⚠️ Home Assistant auto-update is **not** used. GitHub's TLS records are too large for the ESP8266's limited RAM (`BR_ERR_TOO_LARGE`), so manifest-based updates over HTTPS are unreliable on the ESP-01. Manual `esphome upload` over the local network is the supported path.
+> ⚠️ Home Assistant auto-update is **not** used. GitHub's TLS records are too large for the ESP8266's limited RAM (`BR_ERR_TOO_LARGE`), so manifest-based updates over HTTPS are unreliable on the ESP-01. Manual `esphome run` over the local network is the supported path.
 
 ---
 

@@ -10,14 +10,15 @@ ESPHome firmware for an ESP-01S with a DHT22 temperature/humidity sensor. OTA up
 
 ## Release workflow (publishing a new firmware version)
 
-1. Bump `version` in `dht22_esp01.yml` under `esphome.project` (e.g. `"1.0.2"`)
-2. Push the new firmware over Wi-Fi (OTA) from the terminal:
-   `esphome upload dht22_esp01.yml --device <device-ip>`
-   (e.g. `esphome upload dht22_esp01.yml --device 10.0.10.48`)
+1. Bump `version` in `dht22_esp01.yml` under `esphome.project` (e.g. `"1.1.1"`)
+2. Compile and push the new firmware over Wi-Fi (OTA) from the terminal:
+   `esphome run dht22_esp01.yml --device <device-ip>`
+   (e.g. `esphome run dht22_esp01.yml --device 10.0.10.48`)
 3. Commit and push the updated YAML.
 
-The first flash must be done over USB (see README). After that, all updates go over
-Wi-Fi via `esphome upload`.
+Use `esphome run` (compile + upload), NOT `esphome upload` — the latter only re-sends the
+last compiled binary and silently ignores YAML changes. The first flash must be done over
+USB (see README); after that all updates go over Wi-Fi via `esphome run`.
 
 ## Why no Home Assistant auto-update
 
@@ -33,8 +34,16 @@ All units share the same `device_friendly_name` (`DHT22 ESP-01`), with `name_add
 making only the hostname unique. To tell physical sensors apart there's a `text` template
 entity **Location** (`id: location`, `restore_value: true`) — set per device from Home
 Assistant or the web interface; it's stored in flash and survives reboots, no reflash needed.
+An `on_boot` automation defaults it to the device name (incl. MAC suffix) until set by hand.
 Do not give each device a unique `friendly_name` in this shared config — that's what Location
 is for.
+
+## Persisting restore_value across OTA (restore_from_flash)
+
+`esp8266: restore_from_flash: true` is REQUIRED. On the ESP8266, `restore_value` data
+(offsets, Location) defaults to RTC memory, which does NOT survive an OTA reboot — so the
+offsets reset to their `initial_value` (0) after every firmware update. Writing to flash
+fixes that. Do not remove this option.
 
 ## Important limitations
 
