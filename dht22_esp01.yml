@@ -9,24 +9,10 @@ esphome:
   friendly_name: ${device_friendly_name}
   project:
     name: "hugo-leij.dht22-esp01"
-    version: "1.1.1"
-  on_boot:
-    # Default the Location to the device name (incl. MAC suffix) until set by hand.
-    priority: -100
-    then:
-      - if:
-          condition:
-            lambda: 'return id(location).state.empty();'
-          then:
-            - text.set:
-                id: location
-                value: !lambda 'return App.get_name();'
+    version: "1.1.2"
 
 esp8266:
   board: esp01_1m
-  # Persist restore_value data (offsets, location) to flash so it survives OTA
-  # updates and power loss. The default (RTC memory) does not survive an OTA reboot.
-  restore_from_flash: true
 
 logger:
 

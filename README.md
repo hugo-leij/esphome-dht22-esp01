@@ -128,9 +128,9 @@ All units share the same friendly name (`DHT22 ESP-01`), so with several on your
 
 1. Open the device — in Home Assistant, or directly via its IP (web server on port 80).
 2. Set **Location** to where the sensor lives, e.g. `Living room` or `Bedroom`.
-3. The value is stored on the device and survives reboots and firmware updates — no reflash needed, and it moves with the device if you relocate it.
+3. The value is stored on the device and survives reboots — no reflash needed.
 
-Until you set it by hand, **Location** defaults to the device's own name (including its unique MAC suffix), so a fresh unit is never blank.
+> ℹ️ Like the offsets, Location is stored in RTC memory and **resets after a firmware update** (OTA reboot). Just set it again after updating. See the calibration note below for why we don't persist these to flash.
 
 The Location appears at the top of the web interface, so opening an IP immediately tells you which room it is.
 
@@ -177,6 +177,8 @@ The DHT22 sensor can have a small offset compared to the actual temperature or h
 
 > 💡 A good reference device to use: [Bambulab Circular Digital Thermometer/Hygrometer](https://nl.aliexpress.com/item/1005009214032096.html) — compact, accurate, and battery-powered.
 
+> ⚠️ The offsets are stored in RTC memory and **reset to 0 after a firmware update** (OTA reboot). Re-enter them after updating. We deliberately do **not** persist them to flash (`restore_from_flash`): on this ESP-01 that caused a boot loop that bricked the device until a USB reflash. A one-off re-entry after the occasional update is the safer trade-off.
+
 ---
 
 ## ⚠️ Troubleshooting
@@ -188,6 +190,8 @@ The DHT22 sensor can have a small offset compared to the actual temperature or h
 | No sensor readings | Verify DHT22 data wire is on GPIO2; check power supply stability |
 | Device not showing in HA | Check Wi-Fi credentials via captive portal; ensure HA API is enabled |
 | Wrong temperature/humidity | Use the offset sliders in Home Assistant to calibrate |
+| Device offline / boot-looping after OTA (web interface also dead, survives power cycle) | The flashed firmware doesn't boot. It can't be recovered over the air — reflash via USB (see flashing steps). Avoid `restore_from_flash` / boot-time flash writes, which caused this. |
+| Offsets / Location reset to 0 after an update | Expected — they're in RTC memory and don't survive an OTA reboot. Re-enter them. |
 
 ---
 

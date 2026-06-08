@@ -1,6 +1,6 @@
 # ESPHome DHT22 ESP-01S
 
-ESPHome firmware for an ESP-01S with a DHT22 temperature/humidity sensor. OTA updates are done manually from the terminal with `esphome upload`.
+ESPHome firmware for an ESP-01S with a DHT22 temperature/humidity sensor. OTA updates are done manually from the terminal with `esphome run`.
 
 ## Project structure
 
@@ -33,17 +33,24 @@ are now manual via the terminal.
 All units share the same `device_friendly_name` (`DHT22 ESP-01`), with `name_add_mac_suffix`
 making only the hostname unique. To tell physical sensors apart there's a `text` template
 entity **Location** (`id: location`, `restore_value: true`) — set per device from Home
-Assistant or the web interface; it's stored in flash and survives reboots, no reflash needed.
-An `on_boot` automation defaults it to the device name (incl. MAC suffix) until set by hand.
-Do not give each device a unique `friendly_name` in this shared config — that's what Location
-is for.
+Assistant or the web interface; it survives reboots, no reflash needed. Do not give each
+device a unique `friendly_name` in this shared config — that's what Location is for.
 
-## Persisting restore_value across OTA (restore_from_flash)
+## DANGER: do NOT add `restore_from_flash` or a boot-time `on_boot` flash write
 
-`esp8266: restore_from_flash: true` is REQUIRED. On the ESP8266, `restore_value` data
-(offsets, Location) defaults to RTC memory, which does NOT survive an OTA reboot — so the
-offsets reset to their `initial_value` (0) after every firmware update. Writing to flash
-fixes that. Do not remove this option.
+In v1.1.1 we added `esp8266: restore_from_flash: true` plus an `on_boot` automation that
+wrote the Location on boot, trying to keep the temperature/humidity offsets from resetting
+to 0 after an OTA. **It bricked the devices: they boot-looped and would not come back online,
+even after a cold power cycle — recovery required a USB reflash.** v1.1.2 reverted both.
+
+Lesson: on this ESP-01, the proven-good config does NOT use `restore_from_flash`. The known
+trade-off is that `restore_value` data (offsets) lives in RTC memory and resets to
+`initial_value` (0) after an OTA reboot — just re-enter the offsets after an update. That is
+the accepted behavior; do not try to "fix" it by re-enabling flash persistence.
+
+If you ever change anything that runs at boot or touches flash (`restore_from_flash`,
+`on_boot`, `preferences`, `globals`), **test on ONE device and confirm it comes back online
+before flashing any others.** Never push such a change to multiple devices untested.
 
 ## Important limitations
 
