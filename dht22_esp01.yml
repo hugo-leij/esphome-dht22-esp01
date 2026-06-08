@@ -35,6 +35,17 @@ wifi:
 
 captive_portal:
 
+text:
+  - platform: template
+    name: "Location"
+    id: location
+    mode: text
+    optimistic: true
+    restore_value: true
+    initial_value: ""
+    entity_category: config
+    icon: "mdi:map-marker"
+
 number:
   - platform: template
     name: "Temperature Offset"

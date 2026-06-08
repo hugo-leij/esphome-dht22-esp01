@@ -25,6 +25,7 @@ A minimal, Wi-Fi connected temperature and humidity sensor built with an **ESP-0
 - 🌐 Built-in web server (port 80)
 - 🔁 OTA firmware updates over Wi-Fi via `esphome upload` (no USB required after initial flash)
 - 🛠️ Captive portal for easy Wi-Fi setup
+- 📍 Configurable **Location** label (stored on-device) to tell multiple units apart
 - 🏠 Native Home Assistant API integration
 
 ---
@@ -116,7 +117,20 @@ Once connected, the following entities will appear in Home Assistant:
 | SSID | Text Sensor (diagnostic) |
 | Temperature Offset | Number (config) |
 | Humidity Offset | Number (config) |
+| Location | Text (config) |
 | Restart Device | Button |
+
+---
+
+## 📍 Telling devices apart
+
+All units share the same friendly name (`DHT22 ESP-01`), so with several on your network it's hard to know which physical sensor you're looking at. Each device has a **Location** text entity for this:
+
+1. Open the device — in Home Assistant, or directly via its IP (web server on port 80).
+2. Set **Location** to where the sensor lives, e.g. `Living room` or `Bedroom`.
+3. The value is stored on the device and survives reboots — no reflash needed, and it moves with the device if you relocate it.
+
+The Location appears at the top of the web interface, so opening an IP immediately tells you which room it is.
 
 ---
 
