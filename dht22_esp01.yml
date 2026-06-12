@@ -9,10 +9,13 @@ esphome:
   friendly_name: ${device_friendly_name}
   project:
     name: "hugo-leij.dht22-esp01"
-    version: "1.1.2"
+    version: "1.1.4"
 
 esp8266:
   board: esp01_1m
+  # DO NOT add `restore_from_flash: true` — CONFIRMED to brick this ESP-01.
+  # See CLAUDE.md "DANGER" section. Tested on a single device (10.0.10.47),
+  # bricked hard at boot before safe_mode could recover it.
 
 logger:
 

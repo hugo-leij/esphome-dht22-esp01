@@ -36,21 +36,29 @@ entity **Location** (`id: location`, `restore_value: true`) — set per device f
 Assistant or the web interface; it survives reboots, no reflash needed. Do not give each
 device a unique `friendly_name` in this shared config — that's what Location is for.
 
-## DANGER: do NOT add `restore_from_flash` or a boot-time `on_boot` flash write
+## DANGER: `restore_from_flash` BRICKS this ESP-01 — confirmed, do not use it
 
-In v1.1.1 we added `esp8266: restore_from_flash: true` plus an `on_boot` automation that
-wrote the Location on boot, trying to keep the temperature/humidity offsets from resetting
-to 0 after an OTA. **It bricked the devices: they boot-looped and would not come back online,
-even after a cold power cycle — recovery required a USB reflash.** v1.1.2 reverted both.
+`esp8266: restore_from_flash: true` **hard-bricks this ESP-01.** This is confirmed in
+isolation, not a guess:
 
-Lesson: on this ESP-01, the proven-good config does NOT use `restore_from_flash`. The known
-trade-off is that `restore_value` data (offsets) lives in RTC memory and resets to
-`initial_value` (0) after an OTA reboot — just re-enter the offsets after an update. That is
-the accepted behavior; do not try to "fix" it by re-enabling flash persistence.
+- v1.1.1 added `restore_from_flash: true` + an `on_boot` flash write together → both bricked
+  devices boot-looped and stayed dead even after a cold power cycle (USB reflash required).
+- v1.1.3 re-tested `restore_from_flash` **alone** (no `on_boot`), with `safe_mode` added as a
+  net, on a single device (10.0.10.47). It bricked again: completely off the network (no ping,
+  no port 8266, no web). `safe_mode` did NOT help — the crash happens during flash-preference
+  init, before safe_mode brings up Wi-Fi/OTA, so it can't recover. USB reflash required.
+- v1.1.4 reverted to the proven-good config (no `restore_from_flash`, no `safe_mode`).
 
-If you ever change anything that runs at boot or touches flash (`restore_from_flash`,
-`on_boot`, `preferences`, `globals`), **test on ONE device and confirm it comes back online
-before flashing any others.** Never push such a change to multiple devices untested.
+Consequence: `restore_value` data (offsets) lives in RTC memory and **resets to `initial_value`
+(0) after every OTA reboot**. This is unavoidable on this hardware — just re-enter the offsets
+after an update. Do NOT try to "fix" it with `restore_from_flash`; it does not work here.
+
+`safe_mode` is also not a safety net for early-boot crashes — it only helps for crashes that
+happen after Wi-Fi/OTA are up.
+
+General rule: anything that runs at boot or touches flash (`restore_from_flash`, `on_boot`,
+`preferences`, `globals`) must be tested on ONE device, confirmed back online, before touching
+any others. Never push such a change to multiple devices untested.
 
 ## Important limitations
 
